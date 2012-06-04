@@ -1,12 +1,15 @@
-Description
+DESCRIPTION
 Programmable commandline curl program
 
-Usage
+STATUS
+The project is an alpha release, not suitable for production environments.
+
+USAGE
 The executable accept one argument, the config file name, if missing search for config.xml in the current directory.
 
 Example: htping.exe [Config-File-Name]
 
-
+LICENSE
 The MIT License (MIT)
 Copyright (c) 2012 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
 
