@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+<WaitKeyOnExit>True</WaitKeyOnExit>
+<SingleIstance>False</SingleIstance>
+<SMTP Username="" Password="">smtp_server.name</SMTP>
+<Logging Verbose="">{%M%}{%Y%}{%D%}</Logging>
+	<Items>
+		<Item Name="0001" Type="HTTP-GET" Schedule="*" Condition="Countains(ok)" Alarm="0001">http://some.domain.tld/some_script.php</Item>
+	</Items>
+	<Actions>
+		<Item Name="0001" Type="EMAIL"     To="" From="" Subject="" Message=""/>
+		<Item Name="0002" Type="HTTP-POST" To="" Data=""/>
+	</Actions>
+</Config>

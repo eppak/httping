@@ -53,8 +53,7 @@
     <Compile Include="Core\xmlConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="example_config.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="License.txt" />
