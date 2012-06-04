@@ -24,16 +24,15 @@ public static class xmlConfig
     private static bool _SingleIstance;
     private static bool _Loaded;
     private static List<Monitor> _Items;
-    private static List<Action> _Actions;
+    private static Dictionary<string, Action> _Actions;
 
     public static void Load(String FileName)
     {
         XmlDocument doc = new XmlDocument();
-
         _Items = new List<Monitor>();
-        _Actions = new List<Action>();
+        _Actions = new Dictionary<string, Action>();
 
-            /* Load Settings */
+        /* Load Settings */
         doc.Load(FileName);
         _WaitKeyOnExit = Convert.ToBoolean(doc.GetElementsByTagName("WaitKeyOnExit").Item(0).InnerText);
         _SingleIstance = Convert.ToBoolean(doc.GetElementsByTagName("SingleIstance").Item(0).InnerText);
@@ -119,7 +118,7 @@ public static class xmlConfig
                             throw new Exception("Unknown atribute " + n.Attributes.Item(i).Name);
                     }
                 }
-                _Actions.Add(Item);
+                _Actions.Add(Item.Name.ToLower().Trim(), Item);
             }
         }
         _Loaded = true;
@@ -144,29 +143,8 @@ public static class xmlConfig
         get { return _Items; }
     }
 
-    public static List<Action> Actions
+    public static Dictionary<string, Action> Actions
     {
         get { return _Actions; }
     }
-}
-
-public class Monitor
-{
-    public string Name;
-    public string Type;
-    public string Schedule;
-    public string Condition;
-    public string Alarm;
-    public string Target;
-}
-
-public class Action
-{
-    public string Name;
-    public string Type;
-    public string To;
-    public string From;
-    public string Subject;
-    public string Message;
-    public string Data;
 }

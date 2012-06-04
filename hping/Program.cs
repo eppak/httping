@@ -62,8 +62,14 @@ class Program
         Print(xmlConfig.Items.Count + " Items and " + xmlConfig.Actions.Count + " Actions");
         foreach (Monitor M in xmlConfig.Items)
         {
-            Print("Checking {0} monitor...", false, M.Name);
-            Cntrl.Run(M);
+            try
+            {
+                Print("Checking {0} monitor...", false, M.Name);
+                Cntrl.Run(M);
+            }
+            catch (Exception e) {
+                Print("Error {0}", false, e.Message);
+            }
         }
     }
 

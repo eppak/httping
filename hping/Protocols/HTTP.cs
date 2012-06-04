@@ -23,9 +23,9 @@ using System.Web;
 public static class HTTP
 {
 
-    public static string GETPage(string strURL)
+    public static MonitorResult GETPage(string strURL)
     {
-        string strResult = null;
+        MonitorResult Res = new MonitorResult() { Data = "", Success = false, Error = "" };
         WebResponse objResponse = default(WebResponse);
         WebRequest objRequest = HttpWebRequest.Create(strURL);
         objRequest.Method = "GET";
@@ -35,20 +35,23 @@ public static class HTTP
             objResponse = objRequest.GetResponse();
             using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
             {
-                strResult = sr.ReadToEnd();
+                Res.Success = true;
+                Res.Data = sr.ReadToEnd();
                 sr.Close();
             }
         }
-        catch {
-            strResult = "";
+        catch (Exception e){
+            Res.Success = false;
+            Res.Data = "";
+            Res.Error = e.Message;
         }
 
-        return strResult;
+        return Res;
     }
 
-    public static string POSTPage(string strURL, Dictionary<string, string> Data)
+    public static MonitorResult POSTPage(string strURL, Dictionary<string, string> Data)
     {
-        string strResult = null;
+        MonitorResult Res = new MonitorResult() { Data = "", Success = false, Error = "" };
         string postData = "";
 
         WebResponse objResponse = default(WebResponse);            
@@ -66,12 +69,21 @@ public static class HTTP
         dataStream.Write(byteArray, 0, byteArray.Length);
         dataStream.Close();
 
-        objResponse = objRequest.GetResponse();
-        using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
-        {
-            strResult = sr.ReadToEnd();
-            sr.Close();
+        try{
+            objResponse = objRequest.GetResponse();
+            using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
+            {
+                Res.Success = true;
+                Res.Data = sr.ReadToEnd();
+                sr.Close();
+            }
         }
-        return strResult;
+        catch (Exception e){
+            Res.Success = false;
+            Res.Data = "";
+            Res.Error = e.Message;
+        }
+
+        return Res;
     }
 }

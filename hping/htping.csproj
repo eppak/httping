@@ -47,6 +47,7 @@
     <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\Controller.cs" />
     <Compile Include="Core\Mutex.cs" />
+    <Compile Include="Core\Types.cs" />
     <Compile Include="Protocols\HTTP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

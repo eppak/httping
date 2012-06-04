@@ -29,9 +29,11 @@ class Controller
             {
                 case "http":
                 case "http-get":
-                    string Data = HTTP.GETPage(Item.Target);
-
-
+                    MonitorResult Res = HTTP.GETPage(Item.Target);
+                    if (!CheckCondition(Item.Condition, Res.Data) || !Res.Success) {
+                        ExecAlarm(Item.Alarm, Res);
+                    }
+                    else { Program.Print("Item OK"); }
                     break;
 
                 case "http-post":
@@ -42,4 +44,29 @@ class Controller
             }
         }
     }
+
+    private bool CheckCondition(string Cond, string Val) {
+        return true;
+    }
+
+    private void ExecAlarm(string AlarmList, MonitorResult Res)
+    {
+        foreach (string A in AlarmList.Split(',')) {
+            Program.Print("Alarm {0}", false, A);
+            Action Act = xmlConfig.Actions[A.ToLower().Trim()];
+
+            switch (Act.Type.ToLower()) { 
+                case "email":
+                    break;
+
+                case "post":
+                case "http-post":
+                    break;
+
+                default:
+                    throw new Exception("Invalid action type.");
+            }
+        }
+    }
 }
+
