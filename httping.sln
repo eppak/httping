@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "htping", "hping\htping.csproj", "{783C1453-E568-47B6-86B0-19FFEDA373AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "httping", "httping.csproj", "{783C1453-E568-47B6-86B0-19FFEDA373AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

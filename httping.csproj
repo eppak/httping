@@ -8,8 +8,8 @@
     <ProjectGuid>{783C1453-E568-47B6-86B0-19FFEDA373AF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>htping</RootNamespace>
-    <AssemblyName>htping</AssemblyName>
+    <RootNamespace>httping</RootNamespace>
+    <AssemblyName>httping</AssemblyName>
     <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="README" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
