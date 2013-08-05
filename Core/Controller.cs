@@ -1,5 +1,5 @@
 ﻿/* The MIT License (MIT)
-Copyright (c) 2012 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
+Copyright (c) 2013 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using httping.Protocols;
 
 class Controller
@@ -30,10 +31,12 @@ class Controller
             switch (Item.Type.ToLower())
             {
                 case "http": case "http-get":
-                    Program.Print("Monitor [{0}]...", false, Item.Name);
-                    MonitorResult Res = HTTP.GET(System.Web.HttpUtility.UrlDecode(Item.Target));
-                    if (!CheckCondition(Item.Condition, Res.Data) || !Res.Success) { ExecAlarm(Item.Alarm, Res);}
-                        else { Program.Print("NOP"); }
+                        Program.Print("Monitor [{0}]...", false, Item.Name);
+                        MonitorResult Res = HTTP.GET(HttpUtility.UrlDecode(Item.Target));
+                        if (!CheckCondition(Item.Condition, Res.Data) || !Res.Success) 
+                            { ExecAlarm(Item.Alarm, Res);}
+                        else 
+                            { Program.Print("NOP", false); }
                     break;
 
                 case "http-post":
@@ -89,18 +92,21 @@ class Controller
     private void ExecAlarm(string AlarmList, MonitorResult Res)
     {
         foreach (string A in AlarmList.Split(',')) {
-            Program.Print("RUN [{0}]", true, A);
+            Program.Print("RUN>[{0}]...", false, A);
             Action Act = xmlConfig.Actions[A.ToLower().Trim()];
 
             switch (Act.Type.ToLower()) { 
                 case "email":
-                    SMTP.send(Act.From, Act.To, compileMonitor(Res, Act.Subject), compileMonitor(Res, Act.Message));
-
+                        SMTP.send(Act.From, Act.To, compileMonitor(Res, Act.Subject), compileMonitor(Res, Act.Message));
                     break;
 
                 case "http": case "http-get":
+                        MonitorResult getRes = HTTP.GET(HttpUtility.UrlDecode(Act.To));
+                    break;
                     
                 case "exec":
+                        //Not implemented
+                        throw new Exception("Exec not implemented.");
 
                 case "http-post":
                     break;

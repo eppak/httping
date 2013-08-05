@@ -1,5 +1,5 @@
 ﻿/* The MIT License (MIT)
-Copyright (c) 2012 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
+Copyright (c) 2013 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -30,7 +30,8 @@ public static class xmlConfig
     private static string _SMTP_Server;
     private static string _SMTP_Username;
     private static string _SMTP_Password;
-
+    private static int _SMTP_Port;
+    
     private static List<Monitor> _Items;
     private static Dictionary<string, Action> _Actions;
 
@@ -51,8 +52,8 @@ public static class xmlConfig
 
         _SMTP_Server = Convert.ToString(doc.GetElementsByTagName("SMTP").Item(0).InnerText);
         _SMTP_Username = Convert.ToString(doc.SelectSingleNode("Config/SMTP/@Username").InnerText);
-        _SMTP_Password = Convert.ToString(doc.SelectSingleNode("Config/SMTP/@Password").InnerText);        
-
+        _SMTP_Password = Convert.ToString(doc.SelectSingleNode("Config/SMTP/@Password").InnerText);
+        _SMTP_Port = Convert.ToInt16(doc.SelectSingleNode("Config/SMTP/@Port").InnerText);        
 
         /* Load Items */
         foreach (XmlNode nd in doc.SelectNodes("Config/Items"))
@@ -183,6 +184,10 @@ public static class xmlConfig
         get { return _SMTP_Password; }
     }
 
+    public static int SMTP_Port
+    {
+        get { return _SMTP_Port; }
+    }
     public static List<Monitor> Items
     {
         get { return _Items; }

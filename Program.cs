@@ -1,5 +1,5 @@
 ﻿/* The MIT License (MIT)
-Copyright (c) 2012 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
+Copyright (c) 2013 Alessandro Cappellozza (alessandro.cappellozza@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -23,18 +23,19 @@ class Program
     public const string Name = "HTTPing";
     public const string Copy = "Copyright Alessandro Cappellozza (alessandro.cappellozza@gmail.com)";
     public const string Version = "0.1";
-    public const int Build = 1;
+    public const string License = "MIT";
+    public const int Build = 2;
     
     static void Main(string[] args)
     {
-        Program.Print(Program.Name + " v" + Program.Version + "[" + Program.Build + "]");
+        Program.Print(Program.Name + " v" + Program.Version + "[" + Program.Build + "] " + Program.License + " license");
         Program.Print(Program.Copy);
 
         /* Load configuration file */
         switch (args.Length)
         {
             case 0:
-                if (File.Exists("config.xml")) { xmlConfig.Load("config.xml"); Print("LOADING CONFIG"); } else { Print("NO CONFIG FILE"); }
+                if (File.Exists("config.xml")) { xmlConfig.Load("config.xml"); Print("CONFIG LOADED [{0}]", false, xmlConfig.Items.Count + " Items and " + xmlConfig.Actions.Count + " Actions"); } else { Print("NO CONFIG FILE", false); }
                     break;
 
             case 1:
@@ -49,7 +50,7 @@ class Program
         if (xmlConfig.Loaded)
         {
             /* Check mutex presence */
-            if (xmlConfig.SingleIstance && Mutex.Exists()) { Print("MUTEX PRESENT"); return; } else { Print("MUTEX ON"); Mutex.Create(); }
+            if (xmlConfig.SingleIstance && Mutex.Exists()) { Print(", MUTEX PRESENT"); return; } else { Print(", MUTEX ON"); Mutex.Create(); }
 
             /* Execute */
             Run();
@@ -67,7 +68,6 @@ class Program
 
     private static void Run(){
         Controller Cntrl = new Controller();
-        Print(xmlConfig.Items.Count + " Items and " + xmlConfig.Actions.Count + " Actions");
         foreach (Monitor M in xmlConfig.Items)
         {
             try
@@ -75,8 +75,9 @@ class Program
                 Cntrl.Run(M);
             }
             catch (Exception e) {
-                Print("Error {0}", true, false, e.Message);
+                Print("Error [{0}]", false, e.Message);
             }
+            Program.Print("", true);
         }
     }
 
