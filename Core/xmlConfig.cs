@@ -23,6 +23,10 @@ public static class xmlConfig
     private static bool _WaitKeyOnExit;
     private static bool _SingleIstance;
     private static bool _Loaded;
+    private static bool _Logging;
+    private static bool _Logging_Verbose;
+    private static string _Logging_Format;
+
     private static List<Monitor> _Items;
     private static Dictionary<string, Action> _Actions;
 
@@ -36,13 +40,16 @@ public static class xmlConfig
         doc.Load(FileName);
         _WaitKeyOnExit = Convert.ToBoolean(doc.GetElementsByTagName("WaitKeyOnExit").Item(0).InnerText);
         _SingleIstance = Convert.ToBoolean(doc.GetElementsByTagName("SingleIstance").Item(0).InnerText);
-  
+        _Logging = Convert.ToBoolean(doc.SelectSingleNode("Config/Logging/@Enabled").InnerText);
+        _Logging_Format = Convert.ToString(doc.GetElementsByTagName("Logging").Item(0).InnerText);
+        _Logging_Verbose = Convert.ToBoolean(doc.SelectSingleNode("Config/Logging/@Verbose").InnerText);
+
+        
         /* Load Items */
         foreach (XmlNode nd in doc.SelectNodes("Config/Items"))
             {
                 foreach (XmlNode n in nd.ChildNodes)
                 {
-                    //Console.WriteLine("Riga: " + n.Attributes.Item(0).Name + " > " + n.InnerText);
                     Monitor Item = new Monitor();
                     Item.Target = n.InnerText;
                     for (int i = 0; i < n.Attributes.Count; i++){
@@ -80,7 +87,6 @@ public static class xmlConfig
         {
             foreach (XmlNode n in nd.ChildNodes)
             {
-                Console.WriteLine("Riga: " + n.Attributes.Item(0).Name + " > " + n.InnerText);
                 Action Item = new Action();
                 for (int i = 0; i < n.Attributes.Count; i++)
                 {
@@ -136,6 +142,21 @@ public static class xmlConfig
     public static bool Loaded
     {
         get { return _Loaded; }
+    }
+
+    public static bool Logging
+    {
+        get { return _Logging; }
+    }
+
+    public static string LogFormat
+    {
+        get { return _Logging_Format; }
+    }
+
+    public static bool Verbose
+    {
+        get { return _Logging_Verbose; }
     }
 
     public static List<Monitor> Items

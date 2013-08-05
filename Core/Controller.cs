@@ -16,6 +16,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.*/
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 class Controller
 {
@@ -27,13 +28,11 @@ class Controller
         if (Runnable(Item)) {
             switch (Item.Type.ToLower())
             {
-                case "http":
-                case "http-get":
-                    MonitorResult Res = HTTP.GETPage(Item.Target);
-                    if (!CheckCondition(Item.Condition, Res.Data) || !Res.Success) {
-                        ExecAlarm(Item.Alarm, Res);
-                    }
-                    else { Program.Print("Item OK"); }
+                case "http": case "http-get":
+                    Program.Print("Monitor [{0}]...", false, Item.Name);
+                    MonitorResult Res = HTTP.GET(System.Web.HttpUtility.UrlDecode(Item.Target));
+                    if (!CheckCondition(Item.Condition, Res.Data) || !Res.Success) { ExecAlarm(Item.Alarm, Res);}
+                        else { Program.Print("NOP"); }
                     break;
 
                 case "http-post":
@@ -46,20 +45,60 @@ class Controller
     }
 
     private bool CheckCondition(string Cond, string Val) {
-        return true;
+        // Numeric
+        if (Regex.Match(Cond, @"^gte(\s{0,3}):*", RegexOptions.IgnoreCase).Success) {
+            return Convert.ToInt32(Regex.Replace(Cond,  @"^gte(\s{0,3}):*", "", RegexOptions.IgnoreCase)) >= Convert.ToInt32(Val);
+        };
+
+        if (Regex.Match(Cond, @"^gt(\s{0,3}):*", RegexOptions.IgnoreCase).Success)
+        {
+            return Convert.ToInt32(Regex.Replace(Cond, @"^gt(\s{0,3}):*", "", RegexOptions.IgnoreCase)) > Convert.ToInt32(Val);
+        };
+
+        if (Regex.Match(Cond, @"^lte(\s{0,3}):*", RegexOptions.IgnoreCase).Success)
+        {
+            return Convert.ToInt32(Regex.Replace(Cond, @"^lte(\s{0,3}):*", "", RegexOptions.IgnoreCase)) <= Convert.ToInt32(Val);
+        };
+
+        if (Regex.Match(Cond, @"^lt(\s{0,3}):*", RegexOptions.IgnoreCase).Success) {
+            return Convert.ToInt32(Regex.Replace(Cond, @"^lt(\s{0,3}):*", "", RegexOptions.IgnoreCase)) < Convert.ToInt32(Val);
+        };
+
+        // String
+        if (Regex.Match(Cond, @"^eq(\s{0,3}):*", RegexOptions.IgnoreCase).Success) {
+            return Regex.Replace(Cond,  @"^eq(\s{0,3}):*", "", RegexOptions.IgnoreCase) == Val;
+        };
+
+        if (Regex.Match(Cond, @"^\!eq(\s{0,3}):*", RegexOptions.IgnoreCase).Success)
+        {
+            return Regex.Replace(Cond, @"^\!eq(\s{0,3}):*", "", RegexOptions.IgnoreCase) != Val;
+        };
+
+        if (Regex.Match(Cond, @"^cont(\s{0,3}):*", RegexOptions.IgnoreCase).Success) {
+            return Regex.Replace(Cond, @"^cont(\s{0,3}):*", "", RegexOptions.IgnoreCase).IndexOf(Val) > 0;
+        };
+
+        if (Regex.Match(Cond, @"^\!cont(\s{0,3}):*", RegexOptions.IgnoreCase).Success) {
+            return !(Regex.Replace(Cond, @"^\!cont(\s{0,3}):*", "", RegexOptions.IgnoreCase).IndexOf(Val) > 0);
+        };
+
+        throw new Exception("INVALID CONDITION");
     }
 
     private void ExecAlarm(string AlarmList, MonitorResult Res)
     {
         foreach (string A in AlarmList.Split(',')) {
-            Program.Print("Alarm {0}", false, A);
+            Program.Print("RUN [{0}]", true, A);
             Action Act = xmlConfig.Actions[A.ToLower().Trim()];
 
             switch (Act.Type.ToLower()) { 
                 case "email":
                     break;
 
-                case "post":
+                case "http": case "http-get":
+                    
+                case "exec":
+
                 case "http-post":
                     break;
 

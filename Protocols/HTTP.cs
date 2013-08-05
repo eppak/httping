@@ -23,7 +23,7 @@ using System.Web;
 public static class HTTP
 {
 
-    public static MonitorResult GETPage(string strURL)
+    public static MonitorResult GET(string strURL)
     {
         MonitorResult Res = new MonitorResult() { Data = "", Success = false, Error = "" };
         WebResponse objResponse = default(WebResponse);
@@ -49,7 +49,7 @@ public static class HTTP
         return Res;
     }
 
-    public static MonitorResult POSTPage(string strURL, Dictionary<string, string> Data)
+    public static MonitorResult POST(string strURL, Dictionary<string, string> Data)
     {
         MonitorResult Res = new MonitorResult() { Data = "", Success = false, Error = "" };
         string postData = "";

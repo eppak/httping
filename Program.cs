@@ -20,8 +20,17 @@ using System.IO;
 
 class Program
 {
+    public const string Name = "HTTPing";
+    public const string Copy = "Copyright Alessandro Cappellozza (alessandro.cappellozza@gmail.com)";
+    public const string Version = "0.1";
+    public const int Build = 1;
+
+
     static void Main(string[] args)
     {
+        Program.Print(Program.Name + " v" + Program.Version + "[" + Program.Build + "]");
+        Program.Print(Program.Copy);
+
         /* Load configuration file */
         switch (args.Length)
         {
@@ -64,22 +73,27 @@ class Program
         {
             try
             {
-                Print("Checking {0} monitor...", false, M.Name);
                 Cntrl.Run(M);
             }
             catch (Exception e) {
-                Print("Error {0}", false, e.Message);
+                Print("Error {0}", true, false, e.Message);
             }
         }
     }
 
-    public static void Print(string Data, bool WriteLog = false)
+    public static void Print(string Data, bool newline = true, params object[] arg)
     {
-        Console.WriteLine(Data);
+        if (newline) { Console.WriteLine(Data, arg); } else { Console.Write(Data, arg); }
+        Program.WriteLog(Data, newline, arg);
     }
 
-    public static void Print(string Data, bool WriteLog = false, params object[] arg)
+    public static void WriteLog(string Data, bool newline = true, params object[] arg) 
     {
-        Console.WriteLine(Data, arg);
+        if (xmlConfig.Logging) {
+            string FileName = System.IO.Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory) + '\\' +  xmlConfig.LogFormat.Replace("{%Y%}", DateTime.Now.Year.ToString()).Replace("{%M%}", DateTime.Now.Month.ToString().PadLeft(2, '0')).Replace("{%D%}", DateTime.Now.Day.ToString().PadLeft(2, '0'));
+            StreamWriter sw = new StreamWriter(FileName, true);
+            if (newline) { sw.WriteLine(Data, arg); } else { sw.Write(Data, arg); }
+            sw.Close();
+        }
     }
 }
