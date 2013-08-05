@@ -24,8 +24,7 @@ class Program
     public const string Copy = "Copyright Alessandro Cappellozza (alessandro.cappellozza@gmail.com)";
     public const string Version = "0.1";
     public const int Build = 1;
-
-
+    
     static void Main(string[] args)
     {
         Program.Print(Program.Name + " v" + Program.Version + "[" + Program.Build + "]");

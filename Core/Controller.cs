@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using httping.Protocols;
 
 class Controller
 {
@@ -93,6 +94,8 @@ class Controller
 
             switch (Act.Type.ToLower()) { 
                 case "email":
+                    SMTP.send(Act.From, Act.To, compileMonitor(Res, Act.Subject), compileMonitor(Res, Act.Message));
+
                     break;
 
                 case "http": case "http-get":
@@ -107,5 +110,11 @@ class Controller
             }
         }
     }
+
+    private string compileMonitor(MonitorResult mon, string val)
+    {
+        return val.Replace("{%data%}", mon.Data).Replace("{%error%}", mon.Error).Replace("{%success%}", Convert.ToString(mon.Success));
+    }
+
 }
 

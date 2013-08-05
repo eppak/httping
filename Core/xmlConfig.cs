@@ -27,6 +27,10 @@ public static class xmlConfig
     private static bool _Logging_Verbose;
     private static string _Logging_Format;
 
+    private static string _SMTP_Server;
+    private static string _SMTP_Username;
+    private static string _SMTP_Password;
+
     private static List<Monitor> _Items;
     private static Dictionary<string, Action> _Actions;
 
@@ -40,11 +44,16 @@ public static class xmlConfig
         doc.Load(FileName);
         _WaitKeyOnExit = Convert.ToBoolean(doc.GetElementsByTagName("WaitKeyOnExit").Item(0).InnerText);
         _SingleIstance = Convert.ToBoolean(doc.GetElementsByTagName("SingleIstance").Item(0).InnerText);
+
         _Logging = Convert.ToBoolean(doc.SelectSingleNode("Config/Logging/@Enabled").InnerText);
         _Logging_Format = Convert.ToString(doc.GetElementsByTagName("Logging").Item(0).InnerText);
         _Logging_Verbose = Convert.ToBoolean(doc.SelectSingleNode("Config/Logging/@Verbose").InnerText);
 
-        
+        _SMTP_Server = Convert.ToString(doc.GetElementsByTagName("SMTP").Item(0).InnerText);
+        _SMTP_Username = Convert.ToString(doc.SelectSingleNode("Config/SMTP/@Username").InnerText);
+        _SMTP_Password = Convert.ToString(doc.SelectSingleNode("Config/SMTP/@Password").InnerText);        
+
+
         /* Load Items */
         foreach (XmlNode nd in doc.SelectNodes("Config/Items"))
             {
@@ -157,6 +166,21 @@ public static class xmlConfig
     public static bool Verbose
     {
         get { return _Logging_Verbose; }
+    }
+
+    public static string SMTP_Server
+    {
+        get { return _SMTP_Server; }
+    }
+
+    public static string SMTP_Username
+    {
+        get { return _SMTP_Username; }
+    }
+
+    public static string SMTP_Password
+    {
+        get { return _SMTP_Password; }
     }
 
     public static List<Monitor> Items
